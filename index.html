@@ -3,121 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moje Blbosti</title>
+    <title>Moje Blbosti | Vydělávej & Utrácej</title>
     <style>
-        :root { --bg: #f0f2f5; --card: #ffffff; --text: #1d1d1f; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        :root { --bg: #f0f2f5; --card: #ffffff; --text: #1d1d1f; --accent: #007aff; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         
-        h1 { font-size: 3rem; margin-bottom: 40px; }
-        
-        /* Mřížka s hrama */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; width: 100%; max-width: 1000px; }
-        .card { background: var(--card); border-radius: 20px; padding: 20px; text-align: center; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .card img { width: 80px; height: 80px; margin-bottom: 10px; }
-        .card h3 { margin: 10px 0; font-size: 1.5rem; }
+        h1 { font-size: 2.5rem; margin-bottom: 20px; text-align: center; }
+        .balance-display { font-size: 2.5rem; color: #28a745; font-weight: bold; margin-bottom: 20px; position: sticky; top: 10px; background: rgba(240,242,245,0.9); padding: 10px; border-radius: 15px; z-index: 100; }
 
-        /* Sekce hry (schovaná na začátku) */
-        #game-section { display: none; width: 100%; max-width: 800px; text-align: center; background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .back-btn { background: #eee; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; margin-bottom: 20px; font-weight: bold; }
-
-        /* Podpora a Feedback dole */
-        .footer { margin-top: 100px; text-align: center; }
-        .support-btn { background: #ffdd00; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; font-size: 1.1rem; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 221, 0, 0.4); margin: 10px; }
-        .feedback-btn { background: #007aff; color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; font-size: 1.1rem; cursor: pointer; text-decoration: none; display: inline-block; margin: 10px; }
+        /* MENU */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; width: 100%; max-width: 900px; }
+        .card { background: var(--card); border-radius: 20px; padding: 25px; text-align: center; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 2px solid transparent; }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); border-color: var(--accent); }
         
-        #qr-display { display: none; margin-top: 20px; }
-        #qr-display img { width: 250px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        /* HRY SEKCE */
+        .page { display: none; width: 100%; max-width: 800px; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .active { display: block; }
+
+        /* SHOP GRID (Utrácení) */
+        .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 20px; }
+        .item-card { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; }
+        .item-card button { background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
+        .item-card button:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* CLICKER (Vydělávání) */
+        .clicker-main { text-align: center; padding: 40px; }
+        .big-coin { font-size: 100px; cursor: pointer; transition: 0.1s; user-select: none; display: inline-block; }
+        .big-coin:active { transform: scale(0.9); }
+
+        /* FOOTER */
+        .footer { margin-top: 60px; text-align: center; padding-bottom: 40px; }
+        .btn { border: none; padding: 12px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; margin: 5px; transition: 0.2s; }
+        .btn-gold { background: #ffdd00; color: black; }
+        .btn-blue { background: var(--accent); color: white; }
+        #qr-display img { width: 220px; margin-top: 15px; border-radius: 15px; }
     </style>
 </head>
 <body>
 
-    <div id="main-menu">
+    <div id="home" class="page active">
         <h1>Moje Projekty</h1>
         <div class="grid">
-            <div class="card" onclick="openGame('spend-money')">
+            <div class="card" onclick="showPage('game-spend')">
                 <div style="font-size: 50px;">💸</div>
                 <h3>Utrácej milióny</h3>
-                <p>Kolik dokážeš rozházet?</p>
+                <p>Máš prachy a nevíš co s nima? Tady je rozházej!</p>
             </div>
-            
-            <div class="card" style="opacity: 0.5; cursor: default;">
-                <div style="font-size: 50px;">🔒</div>
-                <h3>Další blbost</h3>
-                <p>Už brzy...</p>
+            <div class="card" onclick="showPage('game-clicker')">
+                <div style="font-size: 50px;">⛏️</div>
+                <h3>Těžař korunek</h3>
+                <p>Jsi švorc? Klikáním vydělej svůj první milión.</p>
             </div>
         </div>
     </div>
 
-    <div id="game-section">
-        <button class="back-btn" onclick="goHome()">← Zpět na menu</button>
-        <div id="game-content">
-            <h1>Utrácej prachy</h1>
-            <div style="font-size: 3rem; color: green; font-weight: bold;">Kč <span id="balance">1000000</span></div>
-            <div style="margin-top: 20px;">
-                <button onclick="buy(500)" style="padding: 15px; font-size: 1rem; cursor:pointer;">Burger (500 Kč)</button>
-                <button onclick="buy(15000)" style="padding: 15px; font-size: 1rem; cursor:pointer;">iPhone (15k Kč)</button>
+    <div id="game-spend" class="page">
+        <button class="btn" onclick="showPage('home')">← Zpět</button>
+        <div class="balance-display">Kč <span id="balance-spend">1000000</span></div>
+        <div class="shop-grid" id="shop">
+            </div>
+    </div>
+
+    <div id="game-clicker" class="page">
+        <button class="btn" onclick="showPage('home')">← Zpět</button>
+        <div class="clicker-main">
+            <div class="balance-display">Kč <span id="balance-click">0</span></div>
+            <div class="big-coin" onclick="clickCoin()">💰</div>
+            <p>Klikáním vyděláváš!</p>
+            <div id="upgrades" style="margin-top: 20px;">
+                <button class="btn btn-blue" onclick="buyUpgrade()" id="upgrade-btn">Lepší klik (Cena: 50 Kč)</button>
             </div>
         </div>
     </div>
 
     <div class="footer">
-    <h3>Podpoř mě</h3>
-    <button class="support-btn" onclick="toggleQR()">🎁 Darovat korunku</button>
-    
-    <button onclick="sendFeedback()" class="feedback-btn">📧 Mám nápad / Nahlásit chybu</button>
-    
-    <div id="qr-display">
-        <img src="qr.jpeg" alt="qr.jpeg">
+        <button class="btn btn-gold" onclick="toggleQR()">🎁 Darovat korunku</button>
+        <button class="btn btn-blue" onclick="sendFeedback()">📧 Poslat nápad</button>
+        <div id="qr-display" style="display:none;">
+            <img src="qr.jpeg" alt="QR Platba">
+            <p>Díky! (350190916 / 0300)</p>
+        </div>
     </div>
-
-    <div id="thanks-msg" style="display:none; margin-top: 15px; color: #007aff; font-weight: bold;">
-        Díky! Otevírám tvůj e-mail... Pokud se nic neděje, napiš na: jinlongjou@gmail.com
-    </div>
-</div>
-
-<script>
-    // Tahle funkce to ošetří
-    function sendFeedback() {
-        // 1. Ukážeme jim zprávu na webu
-        document.getElementById('thanks-msg').style.display = 'block';
-        
-        // 2. Vysvětlíme jim to přes vyskakovací okno (vypadá to profi)
-        alert("Teď tě to hodí do tvojí e-mailové aplikace. Stačí napsat zprávu a odeslat. Těším se na tvoje nápady!");
-        
-        // 3. Otevřeme mail
-        window.location.href = "mailto:jinlongjou@gmail.com?subject=Napád/Chyba pro tvoji stránku";
-    }
-    
-    // Zbytek tvých funkcí (buy, openGame, toggleQR...) zůstává stejný
-</script>
 
     <script>
         let money = 1000000;
+        let clickMoney = 0;
+        let clickPower = 1;
+        let upgradeCost = 50;
 
-        function buy(price) {
+        const items = [
+            { name: "Rohlík", price: 3, icon: "🥐" },
+            { name: "Lístek na bus", price: 30, icon: "🚌" },
+            { name: "Předraženej Burger", price: 550, icon: "🍔" },
+            { name: "Novej iPhone", price: 35000, icon: "📱" },
+            { name: "Nadupaný PC", price: 80000, icon: "🖥️" },
+            { name: "Ojetá Oktávka", price: 150000, icon: "🚗" },
+            { name: "Dovolená v Dubaji", price: 300000, icon: "🏖️" },
+            { name: "Rodinný dům", price: 8000000, icon: "🏠" },
+            { name: "Tryskáč", price: 150000000, icon: "🛩️" },
+            { name: "Vlastní Ostrov", price: 500000000, icon: "🏝️" }
+        ];
+
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            updateUI();
+        }
+
+        // --- Hra Utrácení ---
+        function initShop() {
+            const shop = document.getElementById('shop');
+            shop.innerHTML = '';
+            items.forEach(item => {
+                shop.innerHTML += `
+                    <div class="item-card">
+                        <div style="font-size: 40px">${item.icon}</div>
+                        <strong>${item.name}</strong>
+                        <p>${item.price.toLocaleString()} Kč</p>
+                        <button onclick="buyItem(${item.price})" ${money < item.price ? 'disabled' : ''}>Koupit</button>
+                    </div>
+                `;
+            });
+        }
+
+        function buyItem(price) {
             if (money >= price) {
                 money -= price;
-                document.getElementById('balance').innerText = money;
-            } else {
-                alert("Jsi švorc!");
+                updateUI();
             }
         }
 
-        function openGame(gameId) {
-            document.getElementById('main-menu').style.display = 'none';
-            document.getElementById('game-section').style.display = 'block';
+        // --- Hra Clicker ---
+        function clickCoin() {
+            clickMoney += clickPower;
+            updateUI();
         }
 
-        function goHome() {
-            document.getElementById('main-menu').style.display = 'block';
-            document.getElementById('game-section').style.display = 'none';
+        function buyUpgrade() {
+            if (clickMoney >= upgradeCost) {
+                clickMoney -= upgradeCost;
+                clickPower += 2;
+                upgradeCost *= 2;
+                updateUI();
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('balance-spend').innerText = money.toLocaleString();
+            document.getElementById('balance-click').innerText = clickMoney.toLocaleString();
+            document.getElementById('upgrade-btn').innerText = `Lepší klik (Cena: ${upgradeCost} Kč)`;
+            document.getElementById('upgrade-btn').disabled = clickMoney < upgradeCost;
+            initShop();
         }
 
         function toggleQR() {
             let qr = document.getElementById('qr-display');
             qr.style.display = (qr.style.display === 'block') ? 'none' : 'block';
         }
+
+        function sendFeedback() {
+            alert("Otevírám tvůj e-mail. Napiš mi, co mám přidat!");
+            window.location.href = "mailto:jinlongjou@gmail.com?subject=Napád/Chyba pro tvoji stránku";
+        }
+
+        // Start
+        initShop();
     </script>
 </body>
 </html>
