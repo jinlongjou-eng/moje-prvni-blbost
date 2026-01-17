@@ -2,100 +2,106 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulátor Miliardáře</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Simulátor Miliardáře: Ultimate Edition</title>
     <style>
         :root { --bg: #f0f2f5; --card: #ffffff; --text: #1d1d1f; --accent: #007aff; --green: #28a745; --red: #dc3545; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        
-        /* Společné styly */
-        h1 { margin-top: 40px; text-align: center; }
-        button { cursor: pointer; font-family: inherit; }
-        
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overscroll-behavior: none; }
+        h1 { margin-top: 40px; text-align: center; font-weight: 900; letter-spacing: -1px; }
+        button { cursor: pointer; font-family: inherit; -webkit-tap-highlight-color: transparent; }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+
         /* MENU */
         #main-menu { padding: 20px; text-align: center; width: 100%; max-width: 1000px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 30px; }
-        .card { background: var(--card); border-radius: 20px; padding: 30px; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 2px solid transparent; }
-        .card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); border-color: var(--accent); }
-        .card-icon { font-size: 60px; margin-bottom: 15px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-top: 40px; }
+        .card { background: var(--card); border-radius: 25px; padding: 40px; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1); border: 3px solid transparent; position: relative; overflow: hidden; }
+        .card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2); border-color: var(--accent); }
+        .card-icon { font-size: 70px; margin-bottom: 20px; }
+        .card h3 { font-size: 1.8rem; margin: 0 0 10px 0; }
+        .locked-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.7); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; font-size: 3rem; color: #666; }
 
-        /* HRA: UTRÁCENÍ */
-        #game-spend { display: none; width: 100%; max-width: 1200px; padding: 20px; padding-bottom: 150px; /* místo pro košík dole */ }
+        /* HRA UTRÁCENÍ */
+        #game-spend { display: none; width: 100%; max-width: 1200px; padding: 20px; padding-bottom: 180px; }
+        .sticky-header { position: sticky; top: 10px; background: rgba(255,255,255,0.9); padding: 15px 25px; border-radius: 20px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.15); z-index: 90; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.5); }
+        .balance-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #666; font-weight: bold; }
+        .balance { font-size: 1.6rem; font-weight: 900; color: var(--green); white-space: nowrap; }
+        .controls button { padding: 10px 20px; border-radius: 50px; border: none; font-weight: bold; margin-left: 8px; transition: 0.2s; }
+        .btn-back { background: #e4e6eb; color: black; } .btn-back:hover { background: #d0d3d8; }
+        .btn-reset { background: rgba(220, 53, 69, 0.1); color: var(--red); } .btn-reset:hover { background: var(--red); color: white; }
+
+        /* SHOP GRID & ITEMS */
+        .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; margin-top: 30px; }
+        .item { background: white; padding: 25px; border-radius: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.2s; border: 2px solid #f8f9fa; }
+        .item:hover { transform: translateY(-3px); border-color: var(--accent); }
+        .item-icon { font-size: 60px; margin-bottom: 15px; display: block; }
+        .item h3 { font-size: 1.2rem; margin: 5px 0; font-weight: bold; }
+        .price { color: var(--green); font-weight: bold; display: block; margin-bottom: 20px; font-size: 1.1rem; }
         
-        /* Horní lišta s penězi */
-        .sticky-header { position: sticky; top: 0; background: rgba(255,255,255,0.95); padding: 15px 20px; border-radius: 0 0 20px 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); z-index: 100; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px); }
-        .balance { font-size: 1.8rem; font-weight: bold; color: var(--green); }
-        .controls button { padding: 10px 20px; border-radius: 50px; border: none; font-weight: bold; margin-left: 10px; }
-        .btn-back { background: #e4e6eb; color: black; }
-        .btn-reset { background: var(--red); color: white; }
+        /* TURBO NÁKUP OVLÁDÁNÍ */
+        .buy-controls { display: flex; justify-content: center; align-items: center; background: #f0f2f5; border-radius: 15px; padding: 5px; }
+        .buy-btn { background: white; color: black; border: 2px solid #e4e6eb; width: 40px; height: 40px; border-radius: 12px; font-weight: bold; font-size: 1.4rem; display: flex; justify-content: center; align-items: center; transition: 0.1s; }
+        .buy-btn:active { transform: scale(0.9); }
+        .buy-btn.sell { color: var(--red); } .buy-btn.buy { color: var(--green); }
+        .amount-input { width: 80px; text-align: center; border: none; background: transparent; font-weight: bold; font-size: 1.2rem; margin: 0 5px; padding: 5px; border-bottom: 2px solid transparent; transition: 0.3s; border-radius: 0; }
+        .amount-input:focus { outline: none; border-bottom-color: var(--accent); background: rgba(0,122,255,0.05); }
 
-        /* Obchod */
-        .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
-        .item { background: white; padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s; }
-        .item:hover { transform: scale(1.02); }
-        .item img { height: 60px; margin-bottom: 10px; display: block; margin: 0 auto; }
-        .item h3 { font-size: 1.1rem; margin: 5px 0; }
-        .price { color: var(--green); font-weight: bold; display: block; margin-bottom: 10px; }
-        
-        .buy-controls { display: flex; justify-content: space-between; align-items: center; background: #f0f2f5; border-radius: 50px; padding: 5px; }
-        .buy-btn { background: var(--green); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; font-size: 1.2rem; }
-        .buy-btn.sell { background: var(--red); }
-        .amount-badge { font-weight: bold; font-size: 1.1rem; }
-
-        /* SPODNÍ ÚČTENKA (Košík) */
-        .receipt-panel { position: fixed; bottom: 0; left: 0; width: 100%; background: white; box-shadow: 0 -5px 20px rgba(0,0,0,0.15); transform: translateY(85%); transition: transform 0.3s; z-index: 200; border-radius: 20px 20px 0 0; }
+        /* ÚČTENKA (Košík) */
+        .receipt-panel { position: fixed; bottom: 0; left: 0; width: 100%; background: white; box-shadow: 0 -10px 40px rgba(0,0,0,0.2); transform: translateY(88%); transition: transform 0.4s cubic-bezier(0.33, 1, 0.68, 1); z-index: 200; border-radius: 25px 25px 0 0; border-top: 1px solid #eee; }
         .receipt-panel.open { transform: translateY(0); }
-        
-        .receipt-header { padding: 15px 30px; cursor: pointer; background: #333; color: white; border-radius: 20px 20px 0 0; display: flex; justify-content: space-between; font-weight: bold; }
-        .receipt-content { padding: 30px; max-height: 50vh; overflow-y: auto; font-family: 'Courier New', monospace; }
-        
-        .receipt-list { margin-bottom: 20px; border-bottom: 2px dashed #ccc; padding-bottom: 20px; }
-        .receipt-item { display: flex; justify-content: space-between; margin-bottom: 5px; }
-        
-        .checkout-btn { width: 100%; padding: 15px; background: black; color: white; border: none; font-size: 1.2rem; font-weight: bold; border-radius: 10px; margin-top: 10px; }
+        .receipt-header { padding: 20px 30px; cursor: pointer; background: #1a1a1a; color: white; border-radius: 25px 25px 0 0; display: flex; justify-content: space-between; font-weight: bold; align-items: center; }
+        .receipt-content { padding: 30px; max-height: 60vh; overflow-y: auto; }
+        .receipt-paper { background: #fffdf0; padding: 20px; border: 1px dashed #ccc; font-family: 'Courier New', monospace; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .receipt-item { display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px dotted #ddd; padding-bottom: 4px; }
+        .checkout-btn { width: 100%; padding: 20px; background: var(--accent); color: white; border: none; font-size: 1.3rem; font-weight: 900; border-radius: 15px; margin-top: 10px; letter-spacing: 1px; transition: 0.3s; box-shadow: 0 10px 20px -10px rgba(0,122,255,0.5); }
+        .checkout-btn:hover { transform: scale(1.02); box-shadow: 0 15px 30px -10px rgba(0,122,255,0.7); }
 
-        /* LOADING & MODAL */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 999; justify-content: center; align-items: center; flex-direction: column; color: white; text-align: center; }
-        .spinner { border: 5px solid rgba(255,255,255,0.3); border-top: 5px solid white; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        /* MODAL & FOOTER */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 999; justify-content: center; align-items: center; flex-direction: column; color: white; text-align: center; backdrop-filter: blur(5px); padding: 20px; }
+        .spinner { border: 6px solid rgba(255,255,255,0.2); border-top: 6px solid var(--accent); border-radius: 50%; width: 60px; height: 60px; animation: spin 0.8s linear infinite; margin-bottom: 30px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        /* FOOTER NA HLAVNÍ STRÁNCE */
-        .main-footer { margin-top: 50px; padding-bottom: 20px; display: flex; gap: 10px; justify-content: center; }
-        .f-btn { padding: 10px 20px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; }
+        .success-icon { font-size: 80px; display: none; margin-bottom: 20px; animation: popIn 0.5s; }
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+        .main-footer { margin-top: 60px; padding-bottom: 30px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .f-btn { padding: 15px 30px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; font-size: 1.1rem; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .f-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
 
     <div id="main-menu">
-        <h1>💸 Simulátor života</h1>
+        <h1>💸 Simulátor Miliardáře</h1>
         <div class="grid">
             <div class="card" onclick="startGame()">
                 <div class="card-icon">🤑</div>
                 <h3>Utratit 100 Miliard</h3>
-                <p>Máš neomezený budget. Zkus to všechno utratit!</p>
+                <p>Ukaž, jak rychle dokážeš rozfofrovat nekonečný budget.</p>
             </div>
-            <div class="card" style="opacity: 0.6; cursor: not-allowed;">
+            <div class="card" style="cursor: not-allowed;">
                 <div class="card-icon">⛏️</div>
-                <h3>Clicker (Brzy)</h3>
-                <p>Pracujeme na tom...</p>
+                <h3>Těžař Korunek</h3>
+                <p>Od nuly k miliardám. Klikací mánie.</p>
+                <div class="locked-overlay">🔒 BRZY</div>
             </div>
         </div>
 
         <div class="main-footer">
-            <button class="f-btn" style="background: #ffdd00;" onclick="toggleQR()">🎁 Podpořit tvůrce</button>
-            <a href="mailto:jinlongjou@gmail.com" class="f-btn" style="background: #007aff; color: white;">📧 Napsat mi</a>
+            <button class="f-btn" style="background: #ffdd00; color: black;" onclick="toggleQR()">🎁 Podpořit vývoj</button>
+            <button class="f-btn" style="background: var(--accent); color: white;" onclick="sendFeedback()">📧 Poslat nápad</button>
         </div>
         
-        <div id="qr-display" style="display:none; margin-top: 20px;">
-            <img src="qr.jpeg" style="width: 200px; border-radius: 10px;" alt="QR Code">
+        <div id="qr-display" style="display:none; margin-top: 30px; animation: popIn 0.3s;">
+            <img src="qr.jpeg" style="width: 250px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);" alt="QR Code">
+            <p style="font-weight: bold; margin-top: 15px; color: #666;">Díky moc! (350190916 / 0300)</p>
         </div>
     </div>
 
     <div id="game-spend">
         <div class="sticky-header">
             <div>
-                <div style="font-size: 0.8rem; color: #666;">Zůstatek:</div>
-                <div class="balance" id="display-money">100,000,000,000 Kč</div>
+                <div class="balance-label">Aktuální zůstatek</div>
+                <div class="balance" id="display-money">100 000 000 000 Kč</div>
             </div>
             <div class="controls">
                 <button class="btn-reset" onclick="resetGame()">↻ Reset</button>
@@ -103,55 +109,53 @@
             </div>
         </div>
 
-        <div class="shop-grid" id="shop-container">
-            </div>
+        <div class="shop-grid" id="shop-container"></div>
 
         <div class="receipt-panel" id="receipt-panel">
             <div class="receipt-header" onclick="toggleReceipt()">
-                <span>🧾 Tvůj nákupní košík</span>
-                <span id="cart-total-preview">0 Kč (Klikni pro otevření)</span>
+                <span>🛒 Nákupní košík <span style="font-size: 0.8rem; opacity: 0.7;">(Klikni pro otevření)</span></span>
+                <span id="cart-total-preview">0 Kč</span>
             </div>
             <div class="receipt-content">
-                <h2>Účtenka</h2>
-                <div class="receipt-list" id="receipt-list">
-                    <p>Košík je prázdný...</p>
+                <h2 style="text-align: center; margin-bottom: 20px;">Tvoje Účtenka</h2>
+                <div class="receipt-paper">
+                    <div id="receipt-list"><p style="text-align: center; color: #999;">Košík zeje prázdnotou...</p></div>
+                    <div style="text-align: right; font-weight: 900; font-size: 1.4rem; margin-top: 20px; border-top: 2px dashed #333; padding-top: 15px;">
+                        CELKEM K ÚHRADĚ: <span id="cart-total-final" style="color: var(--accent);">0 Kč</span>
+                    </div>
                 </div>
-                <div style="text-align: right; font-weight: bold; font-size: 1.2rem; margin-bottom: 20px;">
-                    CELKEM: <span id="cart-total-final">0 Kč</span>
-                </div>
-                <button class="checkout-btn" onclick="checkout()">💸 ZAPLATIT A ODESLAT</button>
+                <button class="checkout-btn" onclick="checkout()">🚀 ODESLAT PLATBU</button>
             </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="payment-modal">
         <div class="spinner"></div>
-        <h2 id="modal-text">Probíhá platba...</h2>
-        <p id="modal-subtext">Spojuji se s bankou ve Švýcarsku...</p>
-        <button id="modal-close" style="display:none; margin-top: 20px; padding: 10px 30px; background: white; border: none; border-radius: 50px; font-weight: bold; cursor: pointer;" onclick="closeModal()">Zavřít</button>
+        <div class="success-icon">✅</div>
+        <h2 id="modal-text" style="font-size: 2rem;">Zpracovávám transakci...</h2>
+        <p id="modal-subtext" style="font-size: 1.2rem; opacity: 0.8;">Navazuji šifrované spojení...</p>
+        <button id="modal-close" style="display:none; margin-top: 30px; padding: 15px 40px; background: white; color: black; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1.2rem;" onclick="closeModal()">Zavřít okno</button>
     </div>
 
     <script>
-        const INITIAL_MONEY = 100000000000; // 100 Miliard
+        const INITIAL_MONEY = 100000000000;
         let money = INITIAL_MONEY;
-        let cart = {}; // Ukládá co jsi koupil: { "Rohlík": 5, "Auto": 1 }
+        let cart = {};
 
-        // Seznam věcí - přidej si sem co chceš!
         const items = [
-            { name: "Rohlík", price: 3, icon: "🥐" },
+            { name: "Rohlík (pro plebs)", price: 3, icon: "🥐" },
             { name: "Ponožky v sandálech", price: 150, icon: "🧦" },
-            { name: "Lístek na vlak (zpožděný)", price: 400, icon: "🚆" },
-            { name: "Ojetá Felicie", price: 25000, icon: "🚗" },
-            { name: "Herní PC", price: 80000, icon: "💻" },
-            { name: "Rolexky", price: 500000, icon: "⌚" },
-            { name: "Tank", price: 2500000, icon: "🚜" },
-            { name: "Vila na Ořechovce", price: 50000000, icon: "🏠" },
-            { name: "Soukromý tryskáč", price: 800000000, icon: "✈️" },
-            { name: "Mona Lisa", price: 15000000000, icon: "🖼️" },
-            { name: "Celý Twitter (X)", price: 44000000000, icon: "❌" }
+            { name: "Zpožděný vlak ČD", price: 450, icon: "🚆" },
+            { name: "Škoda Felicia (tuning)", price: 35000, icon: "🚗" },
+            { name: "iPhone 16 Pro Max Ultra", price: 45000, icon: "📱" },
+            { name: "Herní PC (RTX 9090)", price: 120000, icon: "🖥️" },
+            { name: "Zlaté Rolexky", price: 850000, icon: "⌚" },
+            { name: "Byt v Praze (garsonka)", price: 8500000, icon: "🏢" },
+            { name: "Vlastní Tank", price: 25000000, icon: "🚜" },
+            { name: "Soukromý Tryskáč", price: 850000000, icon: "✈️" },
+            { name: "Odkoupit dluh ČR", price: 25000000000, icon: "🇨🇿" },
+            { name: "Vesmírná Stanice", price: 60000000000, icon: "🛰️" }
         ];
-
-        // --- FUNKCE PRO HRU ---
 
         function initShop() {
             const container = document.getElementById('shop-container');
@@ -159,138 +163,101 @@
             items.forEach((item, index) => {
                 container.innerHTML += `
                     <div class="item">
-                        <div style="font-size: 50px; margin-bottom: 10px;">${item.icon}</div>
+                        <span class="item-icon">${item.icon}</span>
                         <h3>${item.name}</h3>
                         <span class="price">${formatMoney(item.price)}</span>
-                        
                         <div class="buy-controls">
-                            <button class="buy-btn sell" onclick="updateCart(${index}, -1)">-</button>
-                            <span class="amount-badge" id="count-${index}">0</span>
-                            <button class="buy-btn" onclick="updateCart(${index}, 1)">+</button>
+                            <button class="buy-btn sell" onclick="adjustAmount(${index}, -1)">-</button>
+                            <input type="number" class="amount-input" id="input-${index}" value="0" min="0" onchange="manualInput(${index})">
+                            <button class="buy-btn buy" onclick="adjustAmount(${index}, 1)">+</button>
                         </div>
                     </div>
                 `;
             });
         }
 
-        function updateCart(index, change) {
+        function adjustAmount(index, change) {
+            const input = document.getElementById(`input-${index}`);
+            let newValue = parseInt(input.value) + change;
+            if (newValue < 0) newValue = 0;
+            input.value = newValue;
+            manualInput(index); // Spustí hlavní logiku
+        }
+
+        function manualInput(index) {
+            const inputField = document.getElementById(`input-${index}`);
+            let newCount = parseInt(inputField.value) || 0;
+            if (newCount < 0) { newCount = 0; inputField.value = 0; }
+
             const item = items[index];
             const currentCount = cart[item.name] || 0;
-            const newCount = currentCount + change;
+            const difference = newCount - currentCount;
 
-            // Nemůžeš mít míň než 0 kusů
-            if (newCount < 0) return;
-
-            // Máš na to peníze? (při nákupu)
-            if (change > 0 && money < item.price) {
-                alert("Došly prachy, šéfe!");
+            if (difference > 0 && money < (item.price * difference)) {
+                alert("Na tolik nemáš prachy, bráško! Zkus míň.");
+                inputField.value = currentCount; 
                 return;
             }
 
-            // Update logiky
             cart[item.name] = newCount;
-            money -= (item.price * change);
-            
-            // Update grafiky
-            document.getElementById(`count-${index}`).innerText = newCount;
+            money -= (item.price * difference);
             updateDisplay();
         }
 
         function updateDisplay() {
             document.getElementById('display-money').innerText = formatMoney(money);
-            
-            // Spočítat útratu
             let spent = INITIAL_MONEY - money;
-            document.getElementById('cart-total-preview').innerText = `Útrata: ${formatMoney(spent)} (Rozklikni)`;
+            document.getElementById('cart-total-preview').innerText = formatMoney(spent);
             document.getElementById('cart-total-final').innerText = formatMoney(spent);
 
-            // Vykreslit účtenku
             const list = document.getElementById('receipt-list');
             list.innerHTML = '';
             let isEmpty = true;
-
             for (let itemName in cart) {
                 if (cart[itemName] > 0) {
                     isEmpty = false;
                     let item = items.find(i => i.name === itemName);
-                    list.innerHTML += `
-                        <div class="receipt-item">
-                            <span>${cart[itemName]}x ${itemName}</span>
-                            <span>${formatMoney(item.price * cart[itemName])}</span>
-                        </div>
-                    `;
+                    list.innerHTML += `<div class="receipt-item"><span>${cart[itemName]}x ${itemName}</span><span>${formatMoney(item.price * cart[itemName])}</span></div>`;
                 }
             }
-            
-            if (isEmpty) list.innerHTML = "<p>Zatím jsi nic nekoupil...</p>";
+            if (isEmpty) list.innerHTML = "<p style='text-align: center; color: #999;'>Košík zeje prázdnotou...</p>";
         }
 
         function checkout() {
-            if (money === INITIAL_MONEY) {
-                alert("Košík je prázdný! Kup si aspoň rohlík.");
-                return;
-            }
-
+            if (money === INITIAL_MONEY) { alert("Košík je prázdný! Kup si aspoň rohlík."); return; }
             const modal = document.getElementById('payment-modal');
             const text = document.getElementById('modal-text');
             const sub = document.getElementById('modal-subtext');
             const closeBtn = document.getElementById('modal-close');
             const spinner = document.querySelector('.spinner');
+            const successIcon = document.querySelector('.success-icon');
 
-            modal.style.display = 'flex';
-            closeBtn.style.display = 'none';
-            spinner.style.display = 'block';
-            text.innerText = "Zpracovávám platbu...";
-            sub.innerText = "Spojuji se s bankou...";
+            modal.style.display = 'flex'; closeBtn.style.display = 'none'; spinner.style.display = 'block'; successIcon.style.display = 'none';
+            text.innerText = "Zpracovávám transakci..."; sub.innerText = "Spojuji se s bankou ve Švýcarsku...";
 
-            // Animace (falešná)
-            setTimeout(() => { sub.innerText = "Ověřuji zůstatek..."; }, 1500);
-            setTimeout(() => { sub.innerText = "Tisknu účtenku..."; }, 3000);
+            setTimeout(() => { sub.innerText = "Ověřuji solventnost..."; }, 1500);
+            setTimeout(() => { sub.innerText = "Tisknu zlatou účtenku..."; }, 3000);
             setTimeout(() => {
-                spinner.style.display = 'none';
-                text.innerText = "PLATBA ÚSPĚŠNÁ! ✅";
-                sub.innerText = "Pěkný zbytek života. Právě jsi utratil majlant.";
+                spinner.style.display = 'none'; successIcon.style.display = 'block';
+                text.innerText = "PLATBA ÚSPĚŠNÁ!";
+                sub.innerText = `Právě jsi utratil ${formatMoney(INITIAL_MONEY - money)}. Gratulki.`;
                 closeBtn.style.display = 'block';
             }, 4500);
         }
 
-        function closeModal() {
-            document.getElementById('payment-modal').style.display = 'none';
+        function closeModal() { document.getElementById('payment-modal').style.display = 'none'; }
+        function resetGame() { money = INITIAL_MONEY; cart = {}; initShop(); updateDisplay(); }
+        function startGame() { document.getElementById('main-menu').style.display = 'none'; document.getElementById('game-spend').style.display = 'block'; resetGame(); }
+        function goHome() { document.getElementById('main-menu').style.display = 'block'; document.getElementById('game-spend').style.display = 'none'; resetGame(); }
+        function toggleReceipt() { document.getElementById('receipt-panel').classList.toggle('open'); }
+        function toggleQR() { const qr = document.getElementById('qr-display'); qr.style.display = qr.style.display === 'block' ? 'none' : 'block'; }
+        
+        function sendFeedback() {
+            alert("Bacha, teď se ti otevře e-mailový klient. Napiš mi tam, jakou další šílenost mám přidat!");
+            window.location.href = "mailto:jinlongjou@gmail.com?subject=Nápad na vylepšení miliardáře";
         }
 
-        function resetGame() {
-            money = INITIAL_MONEY;
-            cart = {};
-            initShop(); // Vyresetuje počítadla na 0
-            updateDisplay();
-        }
-
-        function startGame() {
-            document.getElementById('main-menu').style.display = 'none';
-            document.getElementById('game-spend').style.display = 'block';
-            resetGame(); // Vždy začít čistě
-        }
-
-        function goHome() {
-            document.getElementById('main-menu').style.display = 'block';
-            document.getElementById('game-spend').style.display = 'none';
-            resetGame(); // Vymazat progres
-        }
-
-        function toggleReceipt() {
-            document.getElementById('receipt-panel').classList.toggle('open');
-        }
-
-        function toggleQR() {
-            const qr = document.getElementById('qr-display');
-            qr.style.display = qr.style.display === 'block' ? 'none' : 'block';
-        }
-
-        function formatMoney(amount) {
-            return amount.toLocaleString('cs-CZ') + " Kč";
-        }
-
-        // Spustit při načtení
+        function formatMoney(amount) { return amount.toLocaleString('cs-CZ') + " Kč"; }
         initShop();
     </script>
 </body>
