@@ -85,27 +85,6 @@
             <button class="f-btn" style="background: #ffdd00;" onclick="toggleQR()">🎁 Podpořit tvůrce</button>
             <a href="mailto:jinlongjou@gmail.com" class="f-btn" style="background: #007aff; color: white;">📧 Napsat mi</a>
         </div>
-
-        <div id="thanks-msg" style="display:none; margin-top: 15px; color: #007aff; font-weight: bold;">
-        Díky! Otevírám tvůj e-mail... Pokud se nic neděje, napiš na: jinlongjou@gmail.com
-    </div>
-</div>
-
-<script>
-    // Tahle funkce to ošetří
-    function sendFeedback() {
-        // 1. Ukážeme jim zprávu na webu
-        document.getElementById('thanks-msg').style.display = 'block';
-        
-        // 2. Vysvětlíme jim to přes vyskakovací okno (vypadá to profi)
-        alert("Teď tě to hodí do tvojí e-mailové aplikace. Stačí napsat zprávu a odeslat. Těším se na tvoje nápady!");
-        
-        // 3. Otevřeme mail
-        window.location.href = "mailto:jinlongjou@gmail.com?subject=Napád/Chyba pro tvoji stránku";
-    }
-    
-    // Zbytek tvých funkcí (buy, openGame, toggleQR...) zůstává stejný
-</script>
         
         <div id="qr-display" style="display:none; margin-top: 20px;">
             <img src="qr.jpeg" style="width: 200px; border-radius: 10px;" alt="QR Code">
