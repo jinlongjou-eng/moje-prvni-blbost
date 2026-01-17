@@ -62,14 +62,35 @@
     </div>
 
     <div class="footer">
-        <h3>Podpoř mě</h3>
-        <button class="support-btn" onclick="toggleQR()">🎁 Darovat korunku</button>
-        <a href="mailto:jinlongjou@gmail.com" class="feedback-btn">📧 Mám nápad / Nahlásit chybu</a>
-        
-        <div id="qr-display">
-            <img src="qr.jpeg" alt="qr.jpeg">
-        </div>
+    <h3>Podpoř mě</h3>
+    <button class="support-btn" onclick="toggleQR()">🎁 Darovat korunku</button>
+    
+    <button onclick="sendFeedback()" class="feedback-btn">📧 Mám nápad / Nahlásit chybu</button>
+    
+    <div id="qr-display">
+        <img src="qr.jpeg" alt="qr.jpeg">
     </div>
+
+    <div id="thanks-msg" style="display:none; margin-top: 15px; color: #007aff; font-weight: bold;">
+        Díky! Otevírám tvůj e-mail... Pokud se nic neděje, napiš na: jinlongjou@gmail.com
+    </div>
+</div>
+
+<script>
+    // Tahle funkce to ošetří
+    function sendFeedback() {
+        // 1. Ukážeme jim zprávu na webu
+        document.getElementById('thanks-msg').style.display = 'block';
+        
+        // 2. Vysvětlíme jim to přes vyskakovací okno (vypadá to profi)
+        alert("Teď tě to hodí do tvojí e-mailové aplikace. Stačí napsat zprávu a odeslat. Těším se na tvoje nápady!");
+        
+        // 3. Otevřeme mail
+        window.location.href = "mailto:jinlongjou@gmail.com?subject=Napád/Chyba pro tvoji stránku";
+    }
+    
+    // Zbytek tvých funkcí (buy, openGame, toggleQR...) zůstává stejný
+</script>
 
     <script>
         let money = 1000000;
