@@ -3,276 +3,321 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cash game very good👍👍👍</title>
+    <title>GIGA-MILIARDÁŘ: God Mode</title>
     <style>
-        :root { --bg: #ffffff; --surface: #f7f7f7; --text: #1d1d1f; --accent: #007aff; --green: #2ecc71; --red: #e74c3c; --shadow: 0 10px 30px rgba(0,0,0,0.08); }
-        * { box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
-        body { background: var(--bg); color: var(--text); margin: 0; padding: 0; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
+
+        :root {
+            --bg: #ffffff;
+            --surface: #f8f9fa;
+            --text: #0f172a;
+            --accent: #0066ff;
+            --accent-soft: rgba(0, 102, 255, 0.1);
+            --green: #10b981;
+            --red: #ef4444;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 50px rgba(0,0,0,0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+        /* UI ELEMENTS */
+        .screen { display: none; min-height: 100vh; padding: 100px 20px 40px; animation: screenIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .screen.active { display: block; }
+        @keyframes screenIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .glass-nav { position: fixed; top: 0; left: 0; width: 100%; background: rgba(255,255,255,0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); z-index: 1000; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; }
+
+        .btn { border: none; padding: 12px 24px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        .btn:active { transform: scale(0.95); }
+        .btn-primary { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(0,102,255,0.3); }
+        .btn-primary:hover { background: #0052cc; box-shadow: 0 6px 20px rgba(0,102,255,0.4); }
+        .btn-ghost { background: var(--surface); color: var(--text); }
+
+        /* MENU GRID */
+        #menu { max-width: 1200px; margin: 0 auto; text-align: center; }
+        .hero-title { font-size: clamp(2.5rem, 8vw, 4.5rem); font-weight: 800; letter-spacing: -2px; margin-bottom: 10px; }
+        .game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; margin-top: 50px; }
         
-        /* NAVIGACE */
-        .screen { display: none; width: 100%; min-height: 100vh; padding: 20px; animation: fadeIn 0.3s; }
-        .active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .card { 
+            background: var(--bg); border: 1px solid rgba(0,0,0,0.05); border-radius: 32px; padding: 40px; 
+            text-align: left; transition: 0.3s; cursor: pointer; position: relative; overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+        .card:hover { transform: translateY(-10px); box-shadow: var(--shadow-lg); border-color: var(--accent); }
+        .card i { font-style: normal; font-size: 3.5rem; margin-bottom: 20px; display: block; }
+        .card h2 { font-size: 1.8rem; margin-bottom: 10px; }
+        .card p { color: #64748b; line-height: 1.5; }
 
-        .header { position: sticky; top: 0; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); padding: 15px 20px; border-bottom: 1px solid #eee; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
-        .money-display { font-size: 1.5rem; font-weight: 800; color: var(--green); }
+        /* SHOPPING SYSTEM */
+        .shop-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .item-card { 
+            background: var(--surface); border-radius: 24px; padding: 25px; text-align: center; 
+            border: 1px solid transparent; transition: 0.2s;
+        }
+        .item-card:hover { background: white; border-color: var(--accent); box-shadow: var(--shadow-md); }
+        .item-card .icon { font-size: 4rem; margin-bottom: 15px; display: block; }
+        .item-card h3 { margin-bottom: 5px; }
+        .item-card .price { color: var(--green); font-weight: 800; font-size: 1.2rem; display: block; margin-bottom: 15px; }
+        .item-card input { 
+            width: 100%; border: 2px solid #e2e8f0; border-radius: 12px; padding: 10px; 
+            text-align: center; font-weight: 700; font-size: 1.1rem; outline: none; transition: 0.2s;
+        }
+        .item-card input:focus { border-color: var(--accent); background: white; }
 
-        /* MENU */
-        #menu { text-align: center; max-width: 1100px; margin: 0 auto; }
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 40px; }
-        .game-card { background: var(--surface); border-radius: 25px; padding: 35px; cursor: pointer; transition: 0.2s; border: 2px solid transparent; box-shadow: var(--shadow); }
-        .game-card:hover { transform: translateY(-5px); border-color: var(--accent); }
-        .game-card h2 { font-size: 2rem; margin: 15px 0; }
-        .game-card i { font-size: 3rem; display: block; }
+        /* CART / RECEIPT */
+        .cart-panel { 
+            position: fixed; bottom: 20px; right: 20px; left: 20px; max-width: 500px; margin: 0 auto;
+            background: #1e293b; color: white; border-radius: 24px; padding: 20px; 
+            box-shadow: var(--shadow-lg); z-index: 1100; transform: translateY(150%); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .cart-panel.visible { transform: translateY(0); }
+        .cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 
-        /* BUTTONS */
-        .btn { padding: 12px 24px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-blue { background: var(--accent); color: white; }
-        .btn-gray { background: #eee; color: #333; }
+        /* CLICKER EXTRAS */
+        .clicker-main { text-align: center; padding-top: 40px; }
+        .big-coin { 
+            font-size: 10rem; cursor: pointer; user-select: none; transition: 0.1s; 
+            display: inline-block; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));
+        }
+        .big-coin:active { transform: scale(0.85) rotate(-5deg); }
+        .floating-text { position: absolute; color: var(--green); font-weight: 800; pointer-events: none; animation: floatUp 0.8s ease-out forwards; font-size: 1.5rem; z-index: 100; }
+        @keyframes floatUp { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-100px); } }
 
-        /* GAME: SPENDER */
-        .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        .shop-item { background: var(--surface); padding: 20px; border-radius: 20px; text-align: center; }
-        .shop-item input { width: 100%; padding: 10px; margin-top: 10px; border-radius: 10px; border: 1px solid #ddd; text-align: center; font-size: 1.1rem; }
+        /* FOOTER SUPPORT */
+        .support-box { margin-top: 80px; padding: 40px; background: var(--surface); border-radius: 32px; display: inline-block; }
+        #qr-box { display: none; margin-top: 25px; animation: fadeIn 0.3s; }
+        #qr-box img { width: 220px; border-radius: 20px; box-shadow: var(--shadow-md); }
 
-        /* GAME: CLICKER */
-        .clicker-box { text-align: center; padding-top: 50px; }
-        .coin { font-size: 8rem; cursor: pointer; user-select: none; transition: 0.1s; display: inline-block; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1)); }
-        .coin:active { transform: scale(0.9); }
-        .upgrade-list { max-width: 400px; margin: 30px auto; display: flex; flex-direction: column; gap: 10px; }
-
-        /* GAME: CASINO */
-        .casino-wheel { max-width: 500px; margin: 40px auto; background: var(--surface); padding: 40px; border-radius: 30px; text-align: center; }
-        .result-box { font-size: 2rem; font-weight: 800; margin: 20px 0; min-height: 2.5rem; }
-
-        /* RECEIPT PANEL */
-        .receipt { position: fixed; bottom: 0; left: 0; width: 100%; background: white; box-shadow: 0 -10px 40px rgba(0,0,0,0.1); transform: translateY(90%); transition: 0.4s; z-index: 200; border-radius: 30px 30px 0 0; }
-        .receipt.open { transform: translateY(0); }
-        .receipt-head { padding: 20px; cursor: pointer; background: #222; color: white; border-radius: 30px 30px 0 0; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
 
+    <nav class="glass-nav">
+        <div style="font-weight: 800; font-size: 1.2rem; cursor: pointer;" onclick="exitToMenu()">🏦 MILIARDÁŘ OS</div>
+        <div id="global-money" class="money-display" style="font-weight: 800; color: var(--green); font-size: 1.4rem;">0 Kč</div>
+        <button class="btn btn-ghost" onclick="exitToMenu()">Menu</button>
+    </nav>
+
     <div id="screen-menu" class="screen active">
         <div id="menu">
-            <h1 style="font-size: 3rem; margin-top: 50px;">🎮 Miliardář OS</h1>
-            <p>Utrácej, klikej, prohrávej. Jako v reálným životě.</p>
+            <h1 class="hero-title">Zbohatni <br>nebo chcípni.</h1>
+            <p style="font-size: 1.2rem; color: #64748b;">Nejpropracovanější simulátor finanční negramotnosti na světě.</p>
             
-            <div class="menu-grid">
-                <div class="game-card" onclick="initGame('spend', 100000000000)">
+            <div class="game-grid">
+                <div class="card" onclick="startApp('spend', 100000000000)">
                     <i>🛍️</i>
-                    <h2>Shopping</h2>
-                    <p>Utrať 100 miliard za kraviny.</p>
+                    <h2>Shopping Spree</h2>
+                    <p>Máš 100 miliard. Pokud je neutratíš do minuty, jsi nula.</p>
                 </div>
-                <div class="game-card" onclick="initGame('clicker', 0)">
-                    <i>🖱️</i>
-                    <h2>Těžař</h2>
-                    <p>Vydělej si na svůj první rohlík.</p>
+                <div class="card" onclick="startApp('clicker', 0)">
+                    <i>⛏️</i>
+                    <h2>Bitcoin Miner</h2>
+                    <p>Těž virtuální měnu a kupuj si upgrady, co těžili tvý předci.</p>
                 </div>
-                <div class="game-card" onclick="initGame('casino', 5000)">
+                <div class="card" onclick="startApp('casino', 10000)">
                     <i>🎰</i>
-                    <h2>Kasino</h2>
-                    <p>Vsaď si barvu a ztrať i trenky.</p>
+                    <h2>All-In Casino</h2>
+                    <p>Matematika je proti tobě, ale tvý ego říká "dej to tam".</p>
                 </div>
             </div>
 
-            <div style="margin-top: 60px;">
-                <button class="btn btn-blue" onclick="toggleQR()">🎁 Podpořit mě</button>
-               <button class="f-btn" style="background: var(--accent); color: white;" onclick="sendFeedback()">📧 Poslat nápad</button> 
-                <div id="qr-area" style="display:none; margin-top: 20px;">
-                    <img src="qr.jpeg" style="width: 200px; border-radius: 20px;" alt="QR">
+            <div class="support-box">
+                <h3>Chceš víc her? Podpoř autora</h3>
+                <div style="margin-top: 20px; display: flex; gap: 15px; justify-content: center;">
+                    <button class="btn btn-primary" onclick="toggleQR()">🎁 Poslat bůra</button>
+                    <button class="btn btn-ghost" onclick="window.location.href='mailto:jinlongjou@gmail.com'">📧 Feedback</button>
+                </div>
+                <div id="qr-box">
+                    <img src="qr.jpeg" alt="QR Code">
+                    <p style="margin-top: 10px; font-weight: 700; color: #64748b;">Díky, kámo!</p>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="screen-spend" class="screen">
-        <div class="header">
-            <button class="btn btn-gray" onclick="exitToMenu()">← Zpět</button>
-            <div class="money-display" id="spend-money">0 Kč</div>
-            <button class="btn btn-blue" onclick="resetGame()">Reset</button>
-        </div>
-        <div class="shop-grid" id="shop-container"></div>
-        
-        <div class="receipt" id="receipt-box">
-            <div class="receipt-head" onclick="document.getElementById('receipt-box').classList.toggle('open')">
-                <span>🛒 Tvůj košík</span>
-                <span id="receipt-total">0 Kč</span>
+        <div class="shop-container" id="shop-grid"></div>
+        <div class="cart-panel" id="cart-ui">
+            <div class="cart-header">
+                <span style="font-weight: 800;">🛒 TVŮJ KOŠÍK</span>
+                <span id="cart-total-val" style="color: var(--green); font-weight: 800;">0 Kč</span>
             </div>
-            <div style="padding: 30px; max-height: 50vh; overflow-y: auto;">
-                <div id="receipt-items"></div>
-                <hr>
-                <button class="btn btn-blue" style="width:100%; font-size: 1.2rem;" onclick="checkout()">ZAPLATIT MAJLANT</button>
-            </div>
+            <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="checkout()">POTVRDIT TRANSAKCI</button>
         </div>
     </div>
 
     <div id="screen-clicker" class="screen">
-        <div class="header">
-            <button class="btn btn-gray" onclick="exitToMenu()">← Zpět</button>
-            <div class="money-display" id="clicker-money">0 Kč</div>
-        </div>
-        <div class="clicker-box">
-            <div class="coin" onclick="clickMoney()">🪙</div>
-            <div class="upgrade-list" id="clicker-upgrades"></div>
+        <div class="clicker-main">
+            <div class="big-coin" id="main-coin" onclick="handleCoinClick(event)">💰</div>
+            <div style="margin-top: 30px;">
+                <h2 id="click-stats">Zisk: 1 Kč / klik</h2>
+                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="buyUpgrade('cpc', 150)">Lepší GPU (+5/klik, 150 Kč)</button>
+                    <button class="btn btn-primary" onclick="buyUpgrade('cps', 1000)">Serverovna (+20/s, 1000 Kč)</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <div id="screen-casino" class="screen">
-        <div class="header">
-            <button class="btn btn-gray" onclick="exitToMenu()">← Zpět</button>
-            <div class="money-display" id="casino-money">0 Kč</div>
-        </div>
-        <div class="casino-wheel">
-            <h2>Ruleta štěstí</h2>
-            <div class="result-box" id="casino-result">Vsaď si!</div>
-            <div style="display: flex; gap: 10px; justify-content: center;">
-                <button class="btn btn-blue" style="background:#222" onclick="playCasino('black')">Černá (2x)</button>
-                <button class="btn btn-blue" style="background:var(--red)" onclick="playCasino('red')">Červená (2x)</button>
+        <div style="max-width: 600px; margin: 0 auto; text-align: center; background: var(--surface); padding: 50px; border-radius: 40px;">
+            <h1 style="font-size: 3rem; margin-bottom: 20px;">🎰 RUleta</h1>
+            <div id="casino-display" style="font-size: 4rem; margin: 30px 0; font-weight: 900; transition: 0.5s;">?</div>
+            <p>Sázíš 25 % svýho cashu na barvu!</p>
+            <div style="display: flex; gap: 20px; justify-content: center; margin-top: 40px;">
+                <button class="btn btn-primary" style="background: #1e293b;" onclick="playCasino('black')">⚫ ČERNÁ (2x)</button>
+                <button class="btn btn-primary" style="background: var(--red);" onclick="playCasino('red')">🔴 ČERVENÁ (2x)</button>
             </div>
-            <p style="margin-top: 20px; font-size: 0.9rem; color: #888;">Sázíš vždycky 10 % svýho jmění.</p>
         </div>
     </div>
 
     <script>
-        let state = { money: 0, cart: {}, cpc: 1, cps: 0, current: '' };
-        const shopItems = [
-            { name: "Rohlík", price: 3, icon: "🥐" },
-            { name: "Ponožky v sandálech", price: 150, icon: "🧦" },
-            { name: "Kebab s cibulí", price: 180, icon: "🥙" },
-            { name: "Lístek na vlak", price: 450, icon: "🚆" },
-            { name: "Škoda Felicia", price: 35000, icon: "🚗" },
-            { name: "iPhone 16 Pro", price: 45000, icon: "📱" },
-            { name: "Vila v Brně", price: 15000000, icon: "🏡" },
-            { name: "Tryskáč", price: 800000000, icon: "✈️" },
-            { name: "Twitter (X)", price: 44000000000, icon: "❌" }
+        let app = {
+            money: 0,
+            cart: {},
+            cpc: 1,
+            cps: 0,
+            active: 'menu'
+        };
+
+        const catalog = [
+            { id: 1, name: "Rohlík z pekla", price: 5, icon: "🥐" },
+            { id: 2, name: "Ponožky v sandálech", price: 250, icon: "🧦" },
+            { id: 3, name: "Lístek na Metro", price: 40, icon: "🎫" },
+            { id: 4, name: "Kebab Box", price: 165, icon: "🥡" },
+            { id: 5, name: "Škoda Octavia RS", price: 1200000, icon: "🚗" },
+            { id: 6, name: "Vila na Ořechovce", price: 85000000, icon: "🏰" },
+            { id: 7, name: "Hrad Karlštejn", price: 5000000000, icon: "🏰" },
+            { id: 8, name: "Vlastní družice", price: 12000000000, icon: "🛰️" },
+            { id: 9, name: "Slovanská Epopej", price: 2500000000, icon: "🖼️" },
+            { id: 10, name: "Nákup televize Nova", price: 40000000000, icon: "📺" }
         ];
 
-        function initGame(type, startMoney) {
-            state.current = type;
-            state.money = startMoney;
-            state.cart = {};
+        function startApp(screen, initialMoney) {
+            app.active = screen;
+            app.money = initialMoney;
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(`screen-${type}`).classList.add('active');
-            if(type === 'spend') renderShop();
-            if(type === 'clicker') renderUpgrades();
+            document.getElementById(`screen-${screen}`).classList.add('active');
+            
+            if(screen === 'spend') renderShop();
             updateUI();
         }
 
         function updateUI() {
-            const formatted = state.money.toLocaleString() + " Kč";
-            if(document.getElementById(`${state.current}-money`)) {
-                document.getElementById(`${state.current}-money`).innerText = formatted;
-            }
-            if(state.current === 'spend') {
+            const mDisplay = document.getElementById('global-money');
+            mDisplay.innerText = app.money.toLocaleString() + " Kč";
+            
+            if(app.active === 'spend') {
                 let spent = 0;
-                let itemsHtml = '';
-                for (let name in state.cart) {
-                    let item = shopItems.find(i => i.name === name);
-                    let count = state.cart[name];
-                    if(count > 0) {
-                        spent += item.price * count;
-                        itemsHtml += `<div>${count}x ${name} - ${(item.price * count).toLocaleString()} Kč</div>`;
-                    }
-                }
-                document.getElementById('receipt-total').innerText = spent.toLocaleString() + " Kč";
-                document.getElementById('receipt-items').innerHTML = itemsHtml || "Prázdno...";
+                catalog.forEach(item => {
+                    if(app.cart[item.id]) spent += item.price * app.cart[item.id];
+                });
+                document.getElementById('cart-total-val').innerText = spent.toLocaleString() + " Kč";
+                document.getElementById('cart-ui').classList.toggle('visible', spent > 0);
+            }
+            
+            if(app.active === 'clicker') {
+                document.getElementById('click-stats').innerText = `Zisk: ${app.cpc} Kč / klik | Auto: ${app.cps} Kč / s`;
             }
         }
 
-        // SHOP LOGIC
+        // --- SHOP ENGINE ---
         function renderShop() {
-            const container = document.getElementById('shop-container');
-            container.innerHTML = shopItems.map((item, i) => `
-                <div class="shop-item">
-                    <div style="font-size:3rem">${item.icon}</div>
+            const grid = document.getElementById('shop-grid');
+            grid.innerHTML = catalog.map(item => `
+                <div class="item-card">
+                    <span class="icon">${item.icon}</span>
                     <h3>${item.name}</h3>
-                    <p>${item.price.toLocaleString()} Kč</p>
-                    <input type="number" value="0" min="0" onchange="updateCart('${item.name}', this.value)">
+                    <span class="price">${item.price.toLocaleString()} Kč</span>
+                    <input type="number" min="0" placeholder="Počet..." value="${app.cart[item.id] || 0}" 
+                           onchange="updateItem(${item.id}, this.value)">
                 </div>
             `).join('');
         }
 
-        function updateCart(name, val) {
-            let count = parseInt(val) || 0;
-            let item = shopItems.find(i => i.name === name);
-            let currentCount = state.cart[name] || 0;
-            let diff = count - currentCount;
+        function updateItem(id, val) {
+            const item = catalog.find(i => i.id === id);
+            const count = parseInt(val) || 0;
+            const currentCount = app.cart[id] || 0;
+            const diff = count - currentCount;
             
-            if(state.money >= (item.price * diff)) {
-                state.money -= (item.price * diff);
-                state.cart[name] = count;
+            if (app.money >= (item.price * diff)) {
+                app.money -= (item.price * diff);
+                app.cart[id] = count;
             } else {
-                alert("Švorcák!");
-            }
-            updateUI();
-        }
-
-        // CLICKER LOGIC
-        function clickMoney() { state.money += state.cpc; updateUI(); }
-        function renderUpgrades() {
-            const up = document.getElementById('clicker-upgrades');
-            up.innerHTML = `
-                <button class="btn btn-blue" onclick="buyUp('cpc', 100)">Lepší myš (+1/klik, 100 Kč)</button>
-                <button class="btn btn-blue" onclick="buyUp('cps', 500)">Najmout otroka (+1/sec, 500 Kč)</button>
-            `;
-        }
-        function buyUp(type, cost) {
-            if(state.money >= cost) {
-                state.money -= cost;
-                if(type === 'cpc') state.cpc += 2;
-                if(type === 'cps') state.cps += 5;
-                updateUI();
-            }
-        }
-        setInterval(() => { if(state.current === 'clicker') { state.money += state.cps; updateUI(); } }, 1000);
-
-        // CASINO LOGIC
-        function playCasino(betColor) {
-            let bet = Math.floor(state.money * 0.1);
-            if(bet < 1) return alert("Už nemáš ani na slaný tyčinky.");
-            let winColor = Math.random() > 0.5 ? 'red' : 'black';
-            let resBox = document.getElementById('casino-result');
-            
-            if(betColor === winColor) {
-                state.money += bet;
-                resBox.innerText = `VYHRÁL JSI! (${winColor === 'red' ? '🔴' : '⚫'})`;
-                resBox.style.color = 'var(--green)';
-            } else {
-                state.money -= bet;
-                resBox.innerText = `PROHRÁL JSI! (${winColor === 'red' ? '🔴' : '⚫'})`;
-                resBox.style.color = 'var(--red)';
+                alert("Brácho, nemáš na to. Zkus míň.");
+                renderShop(); // reset inputu
             }
             updateUI();
         }
 
         function checkout() {
-            alert("Platba proběhla. Tvoje bankovní konto pláče, ale ty máš plnej košík nesmyslů.");
+            alert("Platba proběhla. Tvoje ego vzrostlo o 200 %.");
             exitToMenu();
+        }
+
+        // --- CLICKER ENGINE ---
+        function handleCoinClick(e) {
+            app.money += app.cpc;
+            const txt = document.createElement('div');
+            txt.className = 'floating-text';
+            txt.innerText = `+${app.cpc}`;
+            txt.style.left = e.pageX + 'px';
+            txt.style.top = e.pageY + 'px';
+            document.body.appendChild(txt);
+            setTimeout(() => txt.remove(), 800);
+            updateUI();
+        }
+
+        function buyUpgrade(type, cost) {
+            if(app.money >= cost) {
+                app.money -= cost;
+                if(type === 'cpc') app.cpc += 5;
+                if(type === 'cps') app.cps += 20;
+                updateUI();
+            }
+        }
+
+        setInterval(() => { if(app.active === 'clicker') { app.money += app.cps; updateUI(); } }, 1000);
+
+        // --- CASINO ENGINE ---
+        function playCasino(choice) {
+            let bet = Math.floor(app.money * 0.25);
+            if(bet < 1) return alert("Jsi švorc, běž makat do clickeru.");
+            
+            const display = document.getElementById('casino-display');
+            display.innerText = "⏳";
+            
+            setTimeout(() => {
+                const winColor = Math.random() > 0.5 ? 'red' : 'black';
+                if(choice === winColor) {
+                    app.money += bet;
+                    display.innerText = "🎉 VÝHRA";
+                    display.style.color = 'var(--green)';
+                } else {
+                    app.money -= bet;
+                    display.innerText = "💀 PROHRA";
+                    display.style.color = 'var(--red)';
+                }
+                updateUI();
+            }, 600);
         }
 
         function exitToMenu() {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById('screen-menu').classList.add('active');
-            state.current = '';
+            app.active = 'menu';
+            app.cart = {};
+            updateUI();
         }
 
         function toggleQR() {
-            let q = document.getElementById('qr-area');
-            q.style.display = q.style.display === 'none' ? 'block' : 'none';
+            const q = document.getElementById('qr-box');
+            q.style.display = q.style.display === 'block' ? 'none' : 'block';
         }
-
-        function resetGame() {
-            if(state.current === 'spend') initGame('spend', 100000000000);
-        }
-
-        function sendFeedback() {
-
-            alert("Bacha, teď se ti otevře e-mailový klient. Napiš mi tam, jakou máš stížnost nebo jakou další šílenost mám přidat!");
-
-            window.location.href = "mailto:jinlongjou@gmail.com?subject=Napád/Chyba pro tvoji stránku";
-
-        } 
     </script>
 </body>
 </html>
