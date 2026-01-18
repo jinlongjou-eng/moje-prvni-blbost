@@ -3,201 +3,332 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MILIARDÁŘ OSn</title>
+    <title>ULTRA-MILIARDÁŘ OS: Definitive Edition</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
 
         :root {
             --bg: #ffffff;
-            --surface: #f8f9fa;
-            --text: #0f172a;
-            --accent: #0066ff;
-            --green: #10b981;
+            --surface: #f1f3f5;
+            --text: #08090a;
+            --accent: #0061ff;
+            --green: #22c55e;
             --red: #ef4444;
-            --shadow: 0 20px 50px rgba(0,0,0,0.1);
+            --shadow: 0 20px 40px rgba(0,0,0,0.1);
+            --radius: 24px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; line-height: 1.5; }
 
-        /* NAVIGACE */
-        .glass-nav { position: fixed; top: 0; width: 100%; background: rgba(255,255,255,0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); z-index: 1000; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; }
+        /* NAVIGATION */
+        .navbar { 
+            position: fixed; top: 0; width: 100%; height: 70px; 
+            background: rgba(255,255,255,0.85); backdrop-filter: blur(15px);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 30px; z-index: 1000; border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .money-counter { font-weight: 800; font-size: 1.4rem; color: var(--green); transition: 0.2s; }
+        .money-bump { transform: scale(1.1); }
 
         /* SCREENS */
-        .screen { display: none; min-height: 100vh; padding: 100px 20px 40px; animation: fadeIn 0.4s ease; }
-        .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .screen { display: none; min-height: 100vh; padding: 100px 20px 40px; }
+        .screen.active { display: block; animation: screenScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes screenScale { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
-        /* TLAČÍTKA */
-        .btn { border: none; padding: 12px 24px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
-        .btn:active { transform: scale(0.95); }
-        .btn-primary { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(0,102,255,0.2); }
+        /* UI COMPONENTS */
+        .btn { 
+            border: none; padding: 14px 28px; border-radius: 18px; font-weight: 700; 
+            cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            display: inline-flex; align-items: center; gap: 10px; font-size: 1rem;
+        }
+        .btn:active { transform: scale(0.9); }
+        .btn-primary { background: var(--accent); color: white; box-shadow: 0 10px 20px rgba(0,97,255,0.2); }
         .btn-ghost { background: var(--surface); color: var(--text); }
 
-        /* MENU KARTY */
-        .game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 50px auto; }
-        .card { background: white; border: 1px solid #eee; border-radius: 30px; padding: 40px; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: var(--shadow); }
+        /* MENU */
+        .hero { text-align: center; max-width: 900px; margin: 0 auto; padding: 40px 0; }
+        .hero h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); font-weight: 800; letter-spacing: -3px; line-height: 1; margin-bottom: 20px; }
+        .game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-top: 50px; }
+        .card { 
+            background: white; border-radius: var(--radius); padding: 40px; text-align: left;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05);
+            cursor: pointer; transition: 0.4s; position: relative;
+        }
+        .card:hover { transform: translateY(-12px); box-shadow: var(--shadow); border-color: var(--accent); }
+        .card i { font-style: normal; font-size: 3.5rem; display: block; margin-bottom: 20px; }
 
-        /* MODAL (SUPPORT) */
-        .modal-overlay { 
-            position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); 
+        /* SHOPPING */
+        .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .item { 
+            background: var(--surface); border-radius: var(--radius); padding: 25px; text-align: center;
+            transition: 0.3s; border: 2px solid transparent;
+        }
+        .item:hover { background: white; border-color: var(--accent); transform: scale(1.03); }
+        .item i { font-size: 3.5rem; display: block; margin-bottom: 10px; }
+        .item h3 { font-size: 1.1rem; margin-bottom: 5px; }
+        .item .price { font-weight: 800; color: var(--green); margin-bottom: 15px; display: block; }
+
+        /* CART PANEL */
+        .cart-bar { 
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(150%);
+            width: 90%; max-width: 500px; background: #08090a; color: white;
+            padding: 20px 30px; border-radius: 25px; display: flex; justify-content: space-between;
+            align-items: center; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1100;
+        }
+        .cart-bar.active { transform: translateX(-50%) translateY(0); }
+
+        /* CLICKER */
+        .clicker-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; }
+        .main-coin { font-size: 12rem; cursor: pointer; user-select: none; transition: 0.1s; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.1)); }
+        .main-coin:active { transform: scale(0.8) rotate(-5deg); }
+        .float-text { position: absolute; font-weight: 800; color: var(--green); pointer-events: none; animation: floatUp 0.8s ease-out forwards; font-size: 1.5rem; }
+        @keyframes floatUp { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-150px); } }
+
+        /* CASINO */
+        .casino-box { max-width: 500px; margin: 0 auto; background: var(--surface); padding: 50px; border-radius: 40px; text-align: center; }
+        #casino-status { font-size: 2.5rem; font-weight: 800; margin: 30px 0; min-height: 3.5rem; transition: 0.3s; }
+
+        /* MODAL */
+        .modal { 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
             display: none; align-items: center; justify-content: center; z-index: 2000;
         }
+        .modal.active { display: flex; animation: fadeIn 0.3s; }
         .modal-content { 
-            background: white; padding: 40px; border-radius: 35px; text-align: center; 
-            max-width: 400px; width: 90%; transform: scale(0.7); opacity: 0; transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: white; padding: 40px; border-radius: 35px; text-align: center; max-width: 400px; width: 90%;
+            transform: translateY(50px); opacity: 0; transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .modal-overlay.active { display: flex; }
-        .modal-overlay.active .modal-content { transform: scale(1); opacity: 1; }
-        #qr-img { width: 100%; border-radius: 20px; margin-bottom: 20px; }
+        .modal.active .modal-content { transform: translateY(0); opacity: 1; }
+        #qr-code { width: 100%; border-radius: 20px; margin: 20px 0; border: 1px solid #eee; }
 
         /* RICKROLL */
-        #secret-btn { 
-            position: fixed; bottom: 5px; right: 5px; width: 20px; height: 20px; 
-            background: transparent; cursor: default; z-index: 9999; border: none; opacity: 0.1;
-        }
-        #secret-btn:hover { opacity: 0.5; cursor: pointer; }
+        #rick { position: fixed; bottom: 5px; right: 5px; width: 15px; height: 15px; opacity: 0.05; cursor: pointer; z-index: 9999; border: none; background: none; }
+        #rick:hover { opacity: 0.8; }
 
-        /* DALŠÍ UI */
-        .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
-        .item-card { background: var(--surface); padding: 25px; border-radius: 25px; text-align: center; }
-        .money-val { font-weight: 800; color: var(--green); font-size: 1.5rem; }
     </style>
 </head>
 <body>
 
-    <nav class="glass-nav">
-        <div style="font-weight: 800;" onclick="goHome()">🏦 MILIARDÁŘ OS</div>
-        <div id="money-display" class="money-val">0 Kč</div>
-        <button class="btn btn-ghost" onclick="goHome()">Menu</button>
+    <nav class="navbar">
+        <div style="font-weight: 800; cursor: pointer;" onclick="changeScreen('menu')">MILIARDÁŘ OS</div>
+        <div id="money" class="money-counter">0 Kč</div>
+        <button class="btn btn-ghost" style="padding: 8px 16px;" onclick="changeScreen('menu')">Menu</button>
     </nav>
 
     <div id="screen-menu" class="screen active">
-        <div style="text-align:center; max-width: 800px; margin: 0 auto;">
-            <h1 style="font-size: 4rem; letter-spacing: -2px;">Prachy dělaj prachy.</h1>
-            <p style="color: #64748b; margin-bottom: 40px;">Zkus neutratit všechno najednou, kámo.</p>
+        <div class="hero">
+            <h1>Utrať to všechno.</h1>
+            <p style="font-size: 1.2rem; color: #64748b;">Virtuální prachy, reálná deprese. Co víc si přát?</p>
             
             <div class="game-grid">
-                <div class="card" onclick="initApp('spend', 100000000000)">
-                    <span style="font-size: 4rem;">🛍️</span>
+                <div class="card" onclick="startApp('spend', 100000000000)">
+                    <i>🛍️</i>
                     <h2>Shopping</h2>
+                    <p>Máš 100 miliard. Kup si všechno, co ti rodiče zakázali.</p>
                 </div>
-                <div class="card" onclick="initApp('clicker', 0)">
-                    <span style="font-size: 4rem;">⛏️</span>
+                <div class="card" onclick="startApp('click', 0)">
+                    <i>🖱️</i>
                     <h2>Těžař</h2>
+                    <p>Nemačkej to tak zběsile, nebo si proklikáš stůl.</p>
                 </div>
-                <div class="card" onclick="initApp('casino', 5000)">
-                    <span style="font-size: 4rem;">🎰</span>
+                <div class="card" onclick="startApp('casino', 10000)">
+                    <i>🎰</i>
                     <h2>Kasino</h2>
+                    <p>Ztrať všechno během pěti sekund. Rekord je tři.</p>
                 </div>
             </div>
 
-            <div style="margin-top: 50px; background: var(--surface); padding: 30px; border-radius: 30px;">
-                <h3>Líbí se ti to? Napiš mi!</h3>
-                <p style="color: #64748b; margin: 10px 0 20px;">Máš nápad na hru nebo jsi našel chybu? Než se naštveš, napiš mi na mail.</p>
+            <div style="margin-top: 60px; padding: 40px; background: var(--surface); border-radius: 35px;">
+                <h2>Něco nefunguje?</h2>
+                <p style="margin: 15px 0 25px; color: #64748b;">Pokud jsi našel bug nebo tě napadla totální šílenost, napiš mi. Nekoušu, pokud nepíšeš hovadiny.</p>
                 <div style="display: flex; gap: 15px; justify-content: center;">
-                    <button class="btn btn-primary" onclick="toggleModal(true)">🎁 Podpoř mě</button>
-                    <button class="btn btn-ghost" onclick="window.location.href='mailto:jinlongjou@gmail.com?subject=Nápad na hru'">📧 Napsat mi</button>
+                    <button class="btn btn-primary" onclick="openSupport()">🎁 Podpoř mě</button>
+                    <button class="btn btn-ghost" onclick="window.location.href='mailto:jinlongjou@gmail.com?subject=Miliardář OS Feedback'">📧 Napiš mi zprávu</button>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="screen-spend" class="screen">
-        <div class="shop-grid" id="shop-container"></div>
-    </div>
-
-    <div id="screen-clicker" class="screen" style="text-align: center;">
-        <div style="font-size: 10rem; cursor: pointer; user-select: none;" onclick="mine()">🪙</div>
-        <h2 id="clicker-info" style="margin-top: 20px;">+1 Kč / klik</h2>
-    </div>
-
-    <div id="screen-casino" class="screen" style="text-align: center;">
-        <h1 style="font-size: 3rem;">Sázka na barvu</h1>
-        <p>Riskuješ 20 % všeho, co máš!</p>
-        <div style="margin: 40px 0; display: flex; gap: 20px; justify-content: center;">
-            <button class="btn btn-primary" style="background: #222;" onclick="bet('black')">Černá</button>
-            <button class="btn btn-primary" style="background: var(--red);" onclick="bet('red')">Červená</button>
+        <div class="shop-grid" id="shop-items"></div>
+        <div class="cart-bar" id="cart-bar">
+            <div>
+                <span style="display:block; font-size: 0.8rem; opacity: 0.7;">CELKEM K ÚHRADĚ</span>
+                <span id="cart-total" style="font-size: 1.2rem; font-weight: 800;">0 Kč</span>
+            </div>
+            <button class="btn btn-primary" onclick="checkout()">KOUPIT</button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="modal-support" onclick="toggleModal(false)">
+    <div id="screen-click" class="screen">
+        <div class="clicker-container">
+            <div class="main-coin" id="coin" onclick="clickCoin(event)">🪙</div>
+            <h2 id="click-power" style="margin-top: 30px;">Zisk: 1 Kč / klik</h2>
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button class="btn btn-primary" onclick="upgrade(100)">Lepší myš (100 Kč)</button>
+                <button class="btn btn-primary" onclick="upgrade(500)">Autoclicker (500 Kč)</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-casino" class="screen">
+        <div class="casino-box">
+            <h1>Ruleta Smrti</h1>
+            <div id="casino-status">VSAĎ SI!</div>
+            <p style="margin-bottom: 30px; opacity: 0.7;">Sázíš 10 % svýho jmění na barvu.</p>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button class="btn btn-primary" style="background: #111;" onclick="play('black')">Černá</button>
+                <button class="btn btn-primary" style="background: var(--red);" onclick="play('red')">Červená</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="support-modal" onclick="closeSupport()">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <h2 style="margin-bottom: 20px;">Podpoř vývoj</h2>
-            <img src="qr.jpeg" id="qr-img" alt="QR Platba">
-            <button class="btn btn-ghost" style="width: 100%; justify-content: center;" onclick="toggleModal(false)">Zavřít</button>
+            <h2 style="font-size: 2rem; letter-spacing: -1px;">Díky za podporu!</h2>
+            <img src="qr.jpeg" id="qr-code" alt="QR Platba">
+            <button class="btn btn-ghost" style="width: 100%; justify-content: center;" onclick="closeSupport()">ZAVŘÍT</button>
         </div>
     </div>
 
-    <button id="secret-btn" onclick="rickroll()"></button>
+    <button id="rick" onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ')"></button>
 
     <script>
-        let state = { money: 0, cpc: 1, current: 'menu' };
-        const items = [
-            { name: "Lístek na tramvaj", price: 30, icon: "🎫" },
-            { name: "Párky v rohlíku", price: 45, icon: "🌭" },
-            { name: "Novej iPhone", price: 35000, icon: "📱" },
-            { name: "Ojetý BMW", price: 450000, icon: "🚗" },
-            { name: "Ostrov v Pacifiku", price: 500000000, icon: "🏝️" }
+        let state = { money: 0, cpc: 1, cps: 0, cart: {}, active: 'menu' };
+        const products = [
+            { id: 1, n: "Rohlík", p: 5, i: "🥐" },
+            { id: 2, n: "Lístek na bus", p: 40, i: "🚌" },
+            { id: 3, n: "Kebab", p: 180, i: "🥙" },
+            { id: 4, n: "iPhone 16", p: 35000, i: "📱" },
+            { id: 5, n: "Ojetá Fabia", p: 120000, i: "🚗" },
+            { id: 6, n: "Vila u moře", p: 55000000, i: "🏖️" },
+            { id: 7, n: "Tryskáč", p: 900000000, i: "✈️" },
+            { id: 8, n: "Fotbalový klub", p: 4500000000, i: "⚽" }
         ];
 
-        function initApp(app, money) {
-            state.current = app;
-            state.money = money;
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(`screen-${app}`).classList.add('active');
-            if(app === 'spend') renderShop();
+        function changeScreen(s) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            document.getElementById(`screen-${s}`).classList.add('active');
+            state.active = s;
+            if(s === 'menu') { state.cart = {}; updateUI(); }
+        }
+
+        function startApp(s, m) {
+            state.money = m;
+            changeScreen(s);
+            if(s === 'spend') renderShop();
             updateUI();
         }
 
         function updateUI() {
-            document.getElementById('money-display').innerText = state.money.toLocaleString() + " Kč";
+            const mEl = document.getElementById('money');
+            mEl.innerText = Math.floor(state.money).toLocaleString() + " Kč";
+            mEl.classList.add('money-bump');
+            setTimeout(() => mEl.classList.remove('money-bump'), 200);
+
+            if(state.active === 'spend') {
+                let total = 0;
+                for(let id in state.cart) {
+                    total += products.find(p => p.id == id).p * state.cart[id];
+                }
+                document.getElementById('cart-total').innerText = total.toLocaleString() + " Kč";
+                document.getElementById('cart-bar').classList.toggle('active', total > 0);
+            }
+            if(state.active === 'click') {
+                document.getElementById('click-power').innerText = `Zisk: ${state.cpc} Kč / klik | Auto: ${state.cps} Kč / s`;
+            }
         }
 
+        // SHOP
         function renderShop() {
-            const container = document.getElementById('shop-container');
-            container.innerHTML = items.map(i => `
-                <div class="item-card">
-                    <div style="font-size: 3rem;">${i.icon}</div>
-                    <h3>${i.name}</h3>
-                    <p class="money-val" style="font-size: 1.1rem;">${i.price.toLocaleString()} Kč</p>
-                    <button class="btn btn-primary" style="margin-top:10px" onclick="buy(${i.price})">Koupit</button>
+            const container = document.getElementById('shop-items');
+            container.innerHTML = products.map(p => `
+                <div class="item">
+                    <i>${p.i}</i>
+                    <h3>${p.n}</h3>
+                    <span class="price">${p.p.toLocaleString()} Kč</span>
+                    <div style="display:flex; gap:10px; justify-content:center;">
+                        <button class="btn btn-ghost" style="padding:5px 15px" onclick="addToCart(${p.id}, -1)">-</button>
+                        <span style="font-weight:800; min-width:20px">${state.cart[p.id] || 0}</span>
+                        <button class="btn btn-ghost" style="padding:5px 15px" onclick="addToCart(${p.id}, 1)">+</button>
+                    </div>
                 </div>
             `).join('');
         }
 
-        function buy(p) {
-            if(state.money >= p) { state.money -= p; updateUI(); } 
-            else { alert("Nejsi tak bohatej, jak si myslíš, kámo."); }
-        }
+        function addToCart(id, change) {
+            const p = products.find(x => x.id === id);
+            const current = state.cart[id] || 0;
+            const next = current + change;
+            
+            if(next < 0) return;
+            if(change > 0 && state.money < p.p) return;
 
-        function mine() { state.money += state.cpc; updateUI(); }
-
-        function bet(color) {
-            let stake = Math.floor(state.money * 0.2);
-            if(stake < 1) return alert("Běž radši makat.");
-            let win = Math.random() > 0.5;
-            if(win) { state.money += stake; alert("Vyhrál jsi " + stake + " Kč!"); }
-            else { state.money -= stake; alert("Prohrál jsi " + stake + " Kč. Smůla."); }
+            state.money -= (p.p * change);
+            state.cart[id] = next;
+            renderShop();
             updateUI();
         }
 
-        function toggleModal(show) {
-            const m = document.getElementById('modal-support');
-            if(show) { m.classList.add('active'); }
-            else { m.classList.remove('active'); }
+        function checkout() {
+            state.cart = {};
+            renderShop();
+            updateUI();
+            const bar = document.getElementById('cart-bar');
+            bar.style.background = 'var(--green)';
+            setTimeout(() => { bar.style.background = '#08090a'; bar.classList.remove('active'); }, 1000);
         }
 
-        function goHome() {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('screen-menu').classList.add('active');
-            state.current = 'menu';
+        // CLICKER
+        function clickCoin(e) {
+            state.money += state.cpc;
+            updateUI();
+            const text = document.createElement('div');
+            text.className = 'float-text';
+            text.innerText = `+${state.cpc} Kč`;
+            text.style.left = e.pageX + 'px';
+            text.style.top = e.pageY + 'px';
+            document.body.appendChild(text);
+            setTimeout(() => text.remove(), 800);
         }
 
-        function rickroll() {
-            window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+        function upgrade(cost) {
+            if(state.money >= cost) {
+                state.money -= cost;
+                if(cost === 100) state.cpc += 2;
+                else state.cps += 5;
+                updateUI();
+            }
         }
+        setInterval(() => { if(state.active === 'click') { state.money += state.cps; updateUI(); } }, 1000);
+
+        // CASINO
+        function play(color) {
+            const bet = Math.floor(state.money * 0.1);
+            if(bet < 1) return;
+            const status = document.getElementById('casino-status');
+            status.innerText = "⏳ TOČÍM...";
+            
+            setTimeout(() => {
+                const win = Math.random() > 0.5;
+                const winColor = color === 'red' ? 'ČERVENÁ' : 'ČERNÁ';
+                if(win) {
+                    state.money += bet;
+                    status.innerText = `VÝHRA! 🎉 (${winColor})`;
+                    status.style.color = 'var(--green)';
+                } else {
+                    state.money -= bet;
+                    status.innerText = `PROHRA 💀 (BYLA ${color === 'red' ? 'ČERNÁ' : 'ČERVENÁ'})`;
+                    status.style.color = 'var(--red)';
+                }
+                updateUI();
+            }, 800);
+        }
+
+        // MODAL
+        function openSupport() { document.getElementById('support-modal').classList.add('active'); }
+        function closeSupport() { document.getElementById('support-modal').classList.remove('active'); }
     </script>
 </body>
 </html>
